@@ -1,25 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+// TW Elements is free under AGPL, with commercial license required for specific uses. See more details: https://tw-elements.com/license/ and contact us for queries at tailwind@mdbootstrap.com
+import { useEffect } from "react";
+import Nav from "./components/Nav";
+import TodoList from "./components/TodoList";
 
-function App() {
+const App = () => {
+  useEffect(() => {
+    const init = async () => {
+      const { Ripple, Dropdown, Input, initTE } = await import("tw-elements");
+      initTE({ Ripple, Dropdown, Input });
+    };
+    init();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Nav />
+      <TodoList />
     </div>
   );
-}
+};
 
 export default App;
