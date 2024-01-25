@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Button from "./Button";
 import Dropdown from "./Dropdown";
+import Modal from "./Modal";
 import { getTodos, createTodo, deleteTodo, updateTodo } from "../api/api";
 
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
+  const [editTodo, setEditTodo] = useState("");
+  const [editId, setEditId] = useState(null);
 
   const getAllTodos = async () => {
     const response = await getTodos();
@@ -31,10 +34,10 @@ const TodoList = () => {
     }
   };
 
-  const updateHandler = (id) => {
+  const updateTodoItem = (id, updateFN) => {
     setTodos((prevTodos) => {
       const updatedTodos = prevTodos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+        todo.id === id ? updateFN(todo) : todo
       );
       updateTodo(
         id,
@@ -42,6 +45,23 @@ const TodoList = () => {
       );
       return updatedTodos;
     });
+  };
+  // Mark Completed
+  const markCompletedHandler = (id) => {
+    updateTodoItem(id, (todo) => ({ ...todo, completed: !todo.completed }));
+  };
+  // Edit Todo
+  const editHandler = (id) => {
+    if (editTodo.trim() === "") return;
+    updateTodoItem(id, (todo) => ({ ...todo, text: editTodo }));
+  };
+
+  const clearEditTodo = () => {
+    setEditTodo((prev) => "");
+  };
+
+  const setEditingTodoId = (id) => {
+    setEditId(id);
   };
 
   const deleteHandler = (id) => {
@@ -56,7 +76,10 @@ const TodoList = () => {
 
   const actionHandlers = {
     deleteAction: deleteHandler,
-    markCompleted: updateHandler,
+    markCompleted: markCompletedHandler,
+    editHandler: editHandler,
+    setEditingTodoId: setEditingTodoId,
+    clearEditTodo: clearEditTodo,
   };
 
   return (
@@ -94,7 +117,7 @@ const TodoList = () => {
                 value=""
                 id={todo.id}
                 checked={todo.completed}
-                onChange={() => updateHandler(todo.id)}
+                onChange={() => markCompletedHandler(todo.id)}
               />
               <label
                 className="inline-block pl-[0.15rem] hover:cursor-pointer"
@@ -110,6 +133,12 @@ const TodoList = () => {
           </li>
         ))}
       </ul>
+      <Modal
+        actionHandlers={actionHandlers}
+        editId={editId}
+        editTodo={editTodo}
+        setEditTodo={setEditTodo}
+      />
     </div>
   );
 };

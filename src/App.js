@@ -7,8 +7,10 @@ import TodoList from "./components/TodoList";
 const App = () => {
   useEffect(() => {
     const init = async () => {
-      const { Ripple, Dropdown, Input, initTE } = await import("tw-elements");
-      initTE({ Ripple, Dropdown, Input });
+      const { Modal, Ripple, Dropdown, Input, initTE } = await import(
+        "tw-elements"
+      );
+      initTE({ Modal, Ripple, Dropdown, Input });
     };
     init();
   }, []);
